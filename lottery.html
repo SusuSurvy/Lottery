@@ -24,29 +24,29 @@
         .container {
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 1200px;
+            max-width: 700px;
             width: 100%;
+            position: relative;
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             font-size: 2.5em;
         }
 
         .content {
             display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
         }
 
         .wheel-section {
-            flex: 1;
-            min-width: 400px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -54,8 +54,8 @@
 
         .wheel-container {
             position: relative;
-            width: 400px;
-            height: 400px;
+            width: 600px;
+            height: 600px;
             margin: 20px 0;
         }
 
@@ -86,13 +86,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
-            border: 5px solid white;
+            border: 6px solid white;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             z-index: 10;
@@ -111,9 +111,73 @@
             transform: translate(-50%, -50%);
         }
 
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            z-index: 5;
+        }
+
+        .settings-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .config-section {
-            flex: 1;
-            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .config-title {
@@ -122,6 +186,29 @@
             margin-bottom: 20px;
             border-bottom: 3px solid #667eea;
             padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+            transform: rotate(90deg);
         }
 
         .prize-item {
@@ -271,6 +358,7 @@
 </head>
 <body>
     <div class="container">
+        <button class="settings-btn" id="settingsBtn">⚙️</button>
         <h1>🎰 转盘抽奖游戏</h1>
 
         <div class="content">
@@ -282,20 +370,26 @@
                 </div>
                 <div class="result-display" id="result"></div>
             </div>
+        </div>
+    </div>
 
-            <div class="config-section">
-                <h2 class="config-title">配置面板</h2>
+    <!-- 配置模态框 -->
+    <div class="modal" id="configModal">
+        <div class="config-section">
+            <h2 class="config-title">
+                <span>配置面板</span>
+                <button class="close-btn" id="closeBtn">×</button>
+            </h2>
 
-                <div class="duration-config">
-                    <label>旋转时长（秒）:</label>
-                    <input type="number" id="duration" value="5" min="1" max="10" step="0.5">
-                </div>
-
-                <div id="prizesContainer"></div>
-
-                <button class="add-prize-btn" id="addPrizeBtn">+ 添加奖品</button>
-                <button class="apply-config-btn" id="applyConfigBtn">应用配置</button>
+            <div class="duration-config">
+                <label>旋转时长（秒）:</label>
+                <input type="number" id="duration" value="5" min="1" max="10" step="0.5">
             </div>
+
+            <div id="prizesContainer"></div>
+
+            <button class="add-prize-btn" id="addPrizeBtn">+ 添加奖品</button>
+            <button class="apply-config-btn" id="applyConfigBtn">应用配置</button>
         </div>
     </div>
 
@@ -306,21 +400,25 @@
                 this.ctx = this.canvas.getContext('2d');
                 this.startBtn = document.getElementById('startBtn');
                 this.resultDisplay = document.getElementById('result');
+                this.modal = document.getElementById('configModal');
                 this.duration = 5000; // 默认5秒
                 this.isSpinning = false;
 
                 // 默认奖品配置
-                this.prizes = [
+                this.defaultPrizes = [
                     { name: '一等奖', probability: 10, color: '#FF6B6B' },
                     { name: '二等奖', probability: 20, color: '#4ECDC4' },
                     { name: '三等奖', probability: 30, color: '#45B7D1' },
                     { name: '谢谢参与', probability: 40, color: '#FFA07A' }
                 ];
 
+                this.prizes = [];
+
                 this.init();
             }
 
             init() {
+                this.loadConfig();
                 this.renderConfig();
                 this.drawWheel();
                 this.bindEvents();
@@ -330,6 +428,52 @@
                 this.startBtn.addEventListener('click', () => this.spin());
                 document.getElementById('addPrizeBtn').addEventListener('click', () => this.addPrize());
                 document.getElementById('applyConfigBtn').addEventListener('click', () => this.applyConfig());
+                document.getElementById('settingsBtn').addEventListener('click', () => this.openModal());
+                document.getElementById('closeBtn').addEventListener('click', () => this.closeModal());
+
+                // 点击模态框背景关闭
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            openModal() {
+                this.modal.classList.add('show');
+            }
+
+            closeModal() {
+                this.modal.classList.remove('show');
+            }
+
+            loadConfig() {
+                try {
+                    const savedConfig = localStorage.getItem('lotteryConfig');
+                    if (savedConfig) {
+                        const config = JSON.parse(savedConfig);
+                        this.prizes = config.prizes || this.defaultPrizes;
+                        this.duration = config.duration || 5000;
+                        document.getElementById('duration').value = this.duration / 1000;
+                    } else {
+                        this.prizes = [...this.defaultPrizes];
+                    }
+                } catch (error) {
+                    console.error('加载配置失败:', error);
+                    this.prizes = [...this.defaultPrizes];
+                }
+            }
+
+            saveConfig() {
+                try {
+                    const config = {
+                        prizes: this.prizes,
+                        duration: this.duration
+                    };
+                    localStorage.setItem('lotteryConfig', JSON.stringify(config));
+                } catch (error) {
+                    console.error('保存配置失败:', error);
+                }
             }
 
             renderConfig() {
@@ -391,11 +535,17 @@
                 this.prizes = newPrizes;
                 this.duration = parseFloat(document.getElementById('duration').value) * 1000;
 
+                // 保存配置
+                this.saveConfig();
+
                 this.drawWheel();
                 this.resultDisplay.classList.remove('show');
                 this.resultDisplay.textContent = '';
 
-                alert('配置已应用！');
+                // 关闭模态框
+                this.closeModal();
+
+                alert('配置已保存并应用！');
             }
 
             drawWheel() {
