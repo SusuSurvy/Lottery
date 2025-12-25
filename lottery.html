@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>转盘抽奖游戏</title>
+    <title>梦乡分享爆率</title>
     <style>
         * {
             margin: 0;
@@ -126,6 +126,7 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
             z-index: 5;
+            display: none;
         }
 
         .settings-btn:hover {
@@ -359,7 +360,7 @@
 <body>
     <div class="container">
         <button class="settings-btn" id="settingsBtn">⚙️</button>
-        <h1>🎰 转盘抽奖游戏</h1>
+        <h1>🎰 梦乡分享爆率</h1>
 
         <div class="content">
             <div class="wheel-section">
@@ -406,10 +407,14 @@
 
                 // 默认奖品配置
                 this.defaultPrizes = [
-                    { name: '一等奖', probability: 10, color: '#FF6B6B' },
-                    { name: '二等奖', probability: 20, color: '#4ECDC4' },
-                    { name: '三等奖', probability: 30, color: '#45B7D1' },
-                    { name: '谢谢参与', probability: 40, color: '#FFA07A' }
+                    { name: '神秘彩蛋', probability: 8, color: '#FF6B6B' },
+                    { name: '精品盲盒', probability: 13, color: '#4ECDC4' },
+                    { name: '咖啡一杯', probability: 12, color: '#45B7D1' },
+                    { name: '4块蜜雪冰城', probability: 10, color: '#FFA07A' },
+                    { name: '再分享一次', probability: 10, color: '#9B59B6' },
+                    { name: '晚餐免单', probability: 15, color: '#F39C12' },
+                    { name: '台球免单', probability: 15, color: '#E74C3C' },
+                    { name: '自选小礼品', probability: 15, color: '#1ABC9C' }
                 ];
 
                 this.prizes = [];
@@ -593,11 +598,40 @@
                     ctx.font = 'bold 20px Arial';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.fillText(prize.name, 0, 0);
 
-                    // 绘制概率
-                    ctx.font = '16px Arial';
-                    ctx.fillText(`${((prize.probability / totalProb) * 100).toFixed(1)}%`, 0, 25);
+                    // 根据扇区大小和文字长度决定是否换行
+                    const prizeName = prize.name;
+                    const sectorAngleDeg = (angle * 180 / Math.PI);
+
+                    // 如果扇区较小或文字较长，进行换行处理
+                    if (sectorAngleDeg < 30 || prizeName.length > 5) {
+                        // 智能分割文字
+                        let lines = [];
+                        if (prizeName.length <= 4) {
+                            lines = [prizeName];
+                        } else if (prizeName.length <= 6) {
+                            // 2-3字一行
+                            const mid = Math.ceil(prizeName.length / 2);
+                            lines = [prizeName.substring(0, mid), prizeName.substring(mid)];
+                        } else {
+                            // 长文本：每行3-4个字
+                            const charsPerLine = prizeName.length <= 8 ? 4 : 3;
+                            for (let i = 0; i < prizeName.length; i += charsPerLine) {
+                                lines.push(prizeName.substring(i, i + charsPerLine));
+                            }
+                        }
+
+                        // 绘制多行文字
+                        const lineHeight = 24;
+                        const totalHeight = (lines.length - 1) * lineHeight;
+                        lines.forEach((line, i) => {
+                            ctx.fillText(line, 0, -totalHeight / 2 + i * lineHeight);
+                        });
+                    } else {
+                        // 单行显示
+                        ctx.fillText(prizeName, 0, 0);
+                    }
+
                     ctx.restore();
 
                     startAngle = endAngle;
